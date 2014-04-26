@@ -11,7 +11,11 @@ from m2ee import M2EE, logger
 logger.setLevel(20)
 
 subprocess.check_call([
-    'sed', '-i', 's|BUILD_PATH|%s|g' % os.getcwd(), '.local/m2ee.yaml'
+    'sed',
+    '-i',
+    's|BUILD_PATH|%s|g; s|9000|%d|'
+    % (os.getcwd(), int(os.environ.get('PORT')) + 1),
+    '.local/m2ee.yaml'
 ])
 
 vcap_app = json.loads(os.environ.get('VCAP_APPLICATION'))
