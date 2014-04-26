@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+cd "$1"
+
 if [[ -d model && -d web && -f model/metadata.json ]]; then
     echo "Mendix App detected"
     exit 0
