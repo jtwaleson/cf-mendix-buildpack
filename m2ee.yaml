@@ -7,6 +7,8 @@ m2ee:
  app_base: BUILD_PATH/
  admin_port: 9000
  admin_listen_addresses: "127.0.0.1"
+ custom_environment:
+  HOME: BUILD_PATH
  javabin: BUILD_PATH/.local/bin/java
  admin_pass: eikeecahngophopeetohweesonohrahphuidaofohhaeghapoo
 
