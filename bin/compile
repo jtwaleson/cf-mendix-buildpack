@@ -21,12 +21,12 @@ function lazyDownload() {
 
 PRE_FLIGHT_CHECK=yes
 
-if [ -z $ADMIN_PASSWORD ]; then
+if [ -z "$ADMIN_PASSWORD" ]; then
     echo "You should provide an ADMIN_PASSWORD environment variable"
     PRE_FLIGHT_CHECK=no
 fi
 
-if [[ -n $DATABASE_URL && "$DATABASE_URL" == postgres* ]]; then
+if [[ -n "$DATABASE_URL" && "$DATABASE_URL" == postgres* ]]; then
     echo "Postgres database detected"
 else
     echo "You should add a database service to this application, and it should be postgres"
