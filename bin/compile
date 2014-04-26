@@ -37,9 +37,11 @@ if [[ "$PRE_FLIGHT_CHECK" == "no" ]]; then
     exit 1
 fi
 
+RUNTIME_VERSION=$(cat "$build_dir/model/metadata.json" | grep RuntimeVersion | awk '{ print $2 }' | sed 's/\"//g; s/,//g; s/\n//g; s/\r//g')
 
 lazyDownload http://packages.mendix.com/debian/pool/non-free/o/oracle-j2re1.7/oracle-j2re1.7_1.7.0+update51_amd64.deb
 lazyDownload https://download.mendix.com/get-pip.py
+lazyDownload https://download.mendix.com/runtimes/mendix-${RUNTIME_VERSION}.tar.gz
 
 # we set the homedir to the build_dir, so pip will install to $build_dir/.local
 export HOME="$build_dir"
@@ -61,6 +63,7 @@ mv "$build_dir/.local/bin/m2ee.py" "$build_dir/.local/bin/m2ee"
 mkdir -p $build_dir/{runtimes,log}
 mkdir -p $build_dir/database
 mkdir -p $build_dir/data/{files,tmp}
+tar xf "$cache_dir/mendix-${RUNTIME_VERSION}.tar.gz" -C "$build_dir/runtimes"
 
 cp "$buildpack_dir/m2ee.yaml" "$build_dir/m2ee-building.yaml"
 
