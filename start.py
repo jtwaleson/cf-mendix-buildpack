@@ -72,6 +72,12 @@ for key, value in runtime_config.iteritems():
 m2ee.config._conf['m2ee']['runtime_port'] = int(os.environ.get('PORT'))
 m2ee.config._conf['m2ee']['app_name'] = vcap_app['application_name']
 
+max_memory = os.environ.get('MEMORY_LIMIT').upper()
+m2ee.config._conf['m2ee']['javaopts'].append('-Xmx%s' % max_memory)
+m2ee.config._conf['m2ee']['javaopts'].append('-Xms%s' % max_memory)
+
+print('Java heap size set to %s' % max_memory)
+
 m2ee.start_appcontainer()
 if not m2ee.send_runtime_config():
     sys.exit(1)
