@@ -73,8 +73,14 @@ m2ee.config._conf['m2ee']['runtime_port'] = int(os.environ.get('PORT'))
 m2ee.config._conf['m2ee']['app_name'] = vcap_app['application_name']
 
 max_memory = os.environ.get('MEMORY_LIMIT').upper()
-m2ee.config._conf['m2ee']['javaopts'].append('-Xmx%s' % max_memory)
-m2ee.config._conf['m2ee']['javaopts'].append('-Xms%s' % max_memory)
+
+match = re.search('([0-9]+)([A-Z])', max_memory)
+max_memory = '%d%s' % (int(match.group(1)) / 2, match.group(2))
+
+heap_size = os.environ.get('HEAP_SIZE', max_memory)
+
+m2ee.config._conf['m2ee']['javaopts'].append('-Xmx%s' % heap_size)
+m2ee.config._conf['m2ee']['javaopts'].append('-Xms%s' % heap_size)
 
 print('Java heap size set to %s' % max_memory)
 
