@@ -77,9 +77,6 @@ cp "$buildpack_dir/m2ee.yaml" "$build_dir/m2ee-building.yaml"
 
 sed -i "s|BUILD_PATH|$build_dir|g" "$build_dir/m2ee-building.yaml"
 
-echo "downloading runtime the official way"
-"$build_dir/.local/bin/m2ee" -c "$build_dir/m2ee-building.yaml" -y download_runtime 2>/dev/null
-
 rm "$build_dir/m2ee-building.yaml"
 
 echo "setting up start command"
