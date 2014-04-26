@@ -18,7 +18,13 @@ subprocess.check_call([
     '.local/m2ee.yaml'
 ])
 
-vcap_app = json.loads(os.environ.get('VCAP_APPLICATION'))
+if os.environ.get('VCAP_APPLICATION'):
+    vcap_app = json.loads(os.environ.get('VCAP_APPLICATION'))
+else:
+    vcap_app = {
+        'application_uris': ['example.com'],
+        'application_name': 'My App',
+    }
 
 m2ee = M2EE(yamlfiles=['.local/m2ee.yaml'], load_default_files=False)
 
@@ -76,7 +82,7 @@ for key, value in runtime_config.iteritems():
 m2ee.config._conf['m2ee']['runtime_port'] = int(os.environ.get('PORT'))
 m2ee.config._conf['m2ee']['app_name'] = vcap_app['application_name']
 
-max_memory = os.environ.get('MEMORY_LIMIT').upper()
+max_memory = os.environ.get('MEMORY_LIMIT', '512m').upper()
 
 match = re.search('([0-9]+)([A-Z])', max_memory)
 max_memory = '%d%s' % (int(match.group(1)) / 2, match.group(2))
