@@ -5,6 +5,7 @@ set -e
 buildpack_dir=$(dirname $(dirname $(readlink -e $0)))
 build_dir="$1"
 cache_dir="$2"
+env_dir="$3"
 
 mkdir -p $cache_dir
 
@@ -13,7 +14,7 @@ function lazyDownload() {
     target=$(basename "$url")
     if [ ! -f "$cache_dir/$target" ]; then
         echo "downloading $target"
-        wget -qq "$url" -O "$cache_dir/$target"
+        curl -L "$url" -o "$cache_dir/$target"
     else
         echo "$target already present"
     fi
@@ -21,12 +22,12 @@ function lazyDownload() {
 
 PRE_FLIGHT_CHECK=yes
 
-if [ -z "$ADMIN_PASSWORD" ]; then
+if [[ -z "$ADMIN_PASSWORD" && ! -f "$env_dir/ADMIN_PASSWORD" ]]; then
     echo "You should provide an ADMIN_PASSWORD environment variable"
     PRE_FLIGHT_CHECK=no
 fi
 
-if [[ -n "$DATABASE_URL" && "$DATABASE_URL" == postgres* ]]; then
+if [[ -n "$DATABASE_URL" && "$DATABASE_URL" == postgres* || "$(cat "$env_dir/DATABASE_URL")" == postgres* ]]; then
     echo "Postgres database detected"
 else
     echo "You should add a database service to this application, and it should be postgres"
@@ -68,8 +69,6 @@ tar xf "$cache_dir/mendix-${RUNTIME_VERSION}.tar.gz" -C "$build_dir/runtimes"
 cp "$buildpack_dir/m2ee.yaml" "$build_dir/m2ee-building.yaml"
 
 sed -i "s|BUILD_PATH|$build_dir|g" "$build_dir/m2ee-building.yaml"
-
-"$build_dir/.local/bin/m2ee" -c "$build_dir/m2ee-building.yaml" -y download_runtime 2>/dev/null
 
 rm "$build_dir/m2ee-building.yaml"
 
