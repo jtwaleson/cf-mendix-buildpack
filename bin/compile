@@ -27,9 +27,7 @@ if [[ -z "$ADMIN_PASSWORD" && ! -f "$env_dir/ADMIN_PASSWORD" ]]; then
     PRE_FLIGHT_CHECK=no
 fi
 
-cat "$env_dir/DATABASE_URL"
-
-if [[ -n "$DATABASE_URL" && "$DATABASE_URL" == postgres* || true ]]; then
+if [[ -n "$DATABASE_URL" && "$DATABASE_URL" == postgres* || "$(cat "$env_dir/DATABASE_URL")" == postgres* ]]; then
     echo "Postgres database detected"
 else
     echo "You should add a database service to this application, and it should be postgres"
