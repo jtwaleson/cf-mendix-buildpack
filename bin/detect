@@ -3,7 +3,7 @@
 cd "$1"
 
 if [[ -d model && -d web && -f model/metadata.json ]]; then
-    echo "Mendix App detected"
+    echo "Mendix"
     exit 0
 else
     echo "no"

@@ -9,8 +9,6 @@ env_dir="$3"
 
 mkdir -p $cache_dir
 
-find "$3"
-
 function lazyDownload() {
     url="$1"
     target=$(basename "$url")
@@ -60,17 +58,14 @@ mkdir -p "$cache_dir/pip"
 
 dpkg-deb -x "$cache_dir/oracle-j2re1.7_1.7.0+update51_amd64.deb" "$build_dir/.local"
 
-echo "setting up executables"
 ln -s "../usr/lib/jvm/j2re1.7-oracle/bin/java" "$build_dir/.local/bin/java"
 
 # DIRT: the script contains import m2ee, so we need to make sure it imports the package, not m2ee.py
 mv "$build_dir/.local/bin/m2ee.py" "$build_dir/.local/bin/m2ee"
 
-echo "creating runtime directory structure"
 mkdir -p $build_dir/{runtimes,log}
 mkdir -p $build_dir/database
 mkdir -p $build_dir/data/{files,tmp}
-echo "unpacking runtime"
 tar xf "$cache_dir/mendix-${RUNTIME_VERSION}.tar.gz" -C "$build_dir/runtimes"
 
 cp "$buildpack_dir/m2ee.yaml" "$build_dir/m2ee-building.yaml"
@@ -79,6 +74,5 @@ sed -i "s|BUILD_PATH|$build_dir|g" "$build_dir/m2ee-building.yaml"
 
 rm "$build_dir/m2ee-building.yaml"
 
-echo "setting up start command"
 cp "$buildpack_dir/m2ee.yaml" "$build_dir/.local/m2ee.yaml"
 cp "$buildpack_dir/start.py" "$build_dir/start.py"
