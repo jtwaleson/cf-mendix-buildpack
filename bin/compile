@@ -43,6 +43,7 @@ RUNTIME_VERSION=$(cat "$build_dir/model/metadata.json" | grep RuntimeVersion | a
 lazyDownload http://packages.mendix.com/debian/pool/non-free/o/oracle-j2re1.7/oracle-j2re1.7_1.7.0+update51_amd64.deb
 lazyDownload https://download.mendix.com/get-pip.py
 lazyDownload https://download.mendix.com/runtimes/mendix-${RUNTIME_VERSION}.tar.gz
+lazyDownload http://download.newrelic.com/newrelic/java-agent/newrelic-agent/3.6.0/newrelic-agent-3.6.0.jar
 
 # we set the homedir to the build_dir, so pip will install to $build_dir/.local
 export HOME="$build_dir"
@@ -74,3 +75,4 @@ rm "$build_dir/m2ee-building.yaml"
 
 cp "$buildpack_dir/m2ee.yaml" "$build_dir/.local/m2ee.yaml"
 cp "$buildpack_dir/start.py" "$build_dir/start.py"
+cp "$cache_dir/newrelic-agent-3.6.0" "$cache_dir/.local/newrelic-agent.jar"

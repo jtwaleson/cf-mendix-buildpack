@@ -26,7 +26,15 @@ else:
         'application_name': 'My App',
     }
 
+if os.environ.get('VCAP_SERVICES'):
+    vcap_services = json.loads(os.environ.get('VCAP_SERVICES'))
+    if 'newrelic' in vcap_services:
+        os.environ['NEW_RELIC_LICENSE_KEY'] = vcap_services['newrelic'][0]['credentials']['licenseKey']
+
+
 m2ee = M2EE(yamlfiles=['.local/m2ee.yaml'], load_default_files=False)
+
+config = m2ee.config._conf
 
 
 def sigterm_handler():
@@ -76,11 +84,11 @@ runtime_config = {
 }
 
 for key, value in runtime_config.iteritems():
-    m2ee.config._conf['mxruntime'][key] = value
+    config['mxruntime'][key] = value
 
 
-m2ee.config._conf['m2ee']['runtime_port'] = int(os.environ.get('PORT'))
-m2ee.config._conf['m2ee']['app_name'] = vcap_app['application_name']
+config['m2ee']['runtime_port'] = int(os.environ.get('PORT'))
+config['m2ee']['app_name'] = vcap_app['application_name']
 
 max_memory = os.environ.get('MEMORY_LIMIT', '512m').upper()
 
@@ -89,8 +97,15 @@ max_memory = '%d%s' % (int(match.group(1)) / 2, match.group(2))
 
 heap_size = os.environ.get('HEAP_SIZE', max_memory)
 
-m2ee.config._conf['m2ee']['javaopts'].append('-Xmx%s' % heap_size)
-m2ee.config._conf['m2ee']['javaopts'].append('-Xms%s' % heap_size)
+javaopts = config['m2ee']['javaopts']
+
+if os.environ.get('NEW_RELIC_LICENSE_KEY'):
+    javaopts.append('-javaagent:%s/.local/newrelic-agent.jar' % os.getcwd())
+    config['m2ee']['custom_environment']['NEW_RELIC_LICENSE_KEY'] = (
+        os.environ.get('NEW_RELIC_LICENSE_KEY')
+    )
+javaopts.append('-Xmx%s' % heap_size)
+javaopts.append('-Xms%s' % heap_size)
 
 print('Java heap size set to %s' % max_memory)
 
