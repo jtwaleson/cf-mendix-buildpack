@@ -8,6 +8,8 @@ cache_dir="$2"
 
 mkdir -p $cache_dir
 
+env
+
 function lazyDownload() {
     url="$1"
     target=$(basename "$url")
