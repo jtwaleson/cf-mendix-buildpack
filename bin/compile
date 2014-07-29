@@ -40,7 +40,7 @@ fi
 
 RUNTIME_VERSION=$(cat "$build_dir/model/metadata.json" | grep RuntimeVersion | awk '{ print $2 }' | sed 's/\"//g; s/,//g; s/\n//g; s/\r//g')
 
-lazyDownload http://packages.mendix.com/debian/pool/non-free/o/oracle-j2re1.7/oracle-j2re1.7_1.7.0+update51_amd64.deb
+lazyDownload https://packages.mendix.com/debian/pool/non-free/o/oracle-j2re1.7/oracle-j2re1.7_1.7.0+update55_amd64.deb
 lazyDownload https://download.mendix.com/get-pip.py
 lazyDownload https://download.mendix.com/runtimes/mendix-${RUNTIME_VERSION}.tar.gz
 
@@ -54,7 +54,7 @@ mkdir -p "$cache_dir/pip"
 # DIRT: we need to download a custom version of PyYAML that does not try to compile libyaml
 ~/.local/bin/pip install --download-cache "$cache_dir/pip" --user http://download.mendix.com/PyYAML-3.11.tar.gz http://download.mendix.com/m2ee-tools-0.5.9.tar.gz
 
-dpkg-deb -x "$cache_dir/oracle-j2re1.7_1.7.0+update51_amd64.deb" "$build_dir/.local"
+dpkg-deb -x "$cache_dir/oracle-j2re1.7_1.7.0+update55_amd64.deb" "$build_dir/.local"
 
 ln -s "../usr/lib/jvm/j2re1.7-oracle/bin/java" "$build_dir/.local/bin/java"
 
