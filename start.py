@@ -28,6 +28,9 @@ else:
 
 m2ee = M2EE(yamlfiles=['.local/m2ee.yaml'], load_default_files=False)
 
+for k in os.environ.keys():
+    print('%s=%s' % (k, os.environ[k]))
+
 
 def sigterm_handler():
     print('stopping the process')
