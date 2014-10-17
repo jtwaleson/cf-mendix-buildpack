@@ -42,6 +42,7 @@ logging:
    max_rotation: 10
 
 mxruntime:
+ DTAPMode: D
  ApplicationRootUrl: https://APP_URI/
 
  MicroflowConstants:
