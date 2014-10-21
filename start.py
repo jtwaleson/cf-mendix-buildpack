@@ -54,6 +54,10 @@ for constant in metadata['Constants']:
         value = int(value)
     constants[constant['Name']] = value
 
+constants['AppCloudServices.OpenIdEnabled'] = True
+constants['AppCloudServices.EnvironmentUUID'] = '2a1495c6-5ead-49a7-ae75-7c9ca48b6b5a'
+constants['AppCloudServices.EnvironmentPassword'] = 'AZCQFam*@m[)=E!l35\'g'
+
 print('using microflow constants')
 print(constants)
 
