@@ -55,3 +55,4 @@ mxruntime:
  DatabasePassword: "1"
  DatabaseUseSsl: False
  SessionTimeout: 600000
+ PersistentSessions: true
