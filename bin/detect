@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+echo "Mendix"
+exit 0
 
 cd "$1"
 
