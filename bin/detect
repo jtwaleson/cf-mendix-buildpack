@@ -2,6 +2,8 @@
 
 cd "$1"
 
+echo "Detecting Mendix Custom Buildpack"
+
 if [[ -d model && -d web && -f model/metadata.json ]]; then
     echo "Mendix"
     exit 0
