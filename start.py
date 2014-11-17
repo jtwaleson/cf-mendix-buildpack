@@ -8,6 +8,8 @@ import sys
 import time
 from m2ee import M2EE, logger
 
+print "Started Mendix Cloud Foundry Buildpack"
+
 logger.setLevel(20)
 
 subprocess.check_call([
@@ -28,6 +30,8 @@ else:
 
 m2ee = M2EE(yamlfiles=['.local/m2ee.yaml'], load_default_files=False)
 
+print "Loaded m2ee config file"
+
 for k in os.environ.keys():
     print('%s=%s' % (k, os.environ[k]))
 
@@ -41,6 +45,8 @@ def sigterm_handler():
 signal.signal(signal.SIGTERM, sigterm_handler)
 
 metadata = json.loads(open('model/metadata.json').read())
+
+print "Metadata successfully read"
 
 constants = {}
 
@@ -104,6 +110,8 @@ print('Java heap size set to %s' % max_memory)
 m2ee.start_appcontainer()
 if not m2ee.send_runtime_config():
     sys.exit(1)
+
+print "Appcontainer has been started"
 
 with open('log/out.log', 'a'):
     os.utime('log/out.log', None)
