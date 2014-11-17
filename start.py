@@ -32,10 +32,6 @@ m2ee = M2EE(yamlfiles=['.local/m2ee.yaml'], load_default_files=False)
 
 print "Loaded m2ee config file"
 
-for k in os.environ.keys():
-    print('%s=%s' % (k, os.environ[k]))
-
-
 def sigterm_handler():
     print('stopping the process')
     m2ee.stop()
@@ -67,9 +63,6 @@ constants['AppCloudServices.OpenIdEnabled'] = True
 constants['AppCloudServices.EnvironmentUUID'] = '2a1495c6-5ead-49a7-ae75-7c9ca48b6b5a'
 constants['AppCloudServices.EnvironmentPassword'] = 'AZCQFam*@m[)=E!l35\'g'
 
-print('using microflow constants')
-print(constants)
-
 db_url = os.environ.get('DATABASE_URL')
 pattern = r'postgres://([^:]+):([^@]+)@([^/]+)/(.*)'
 match = re.search(pattern, db_url)
@@ -90,7 +83,6 @@ runtime_config = {
 
 for key, value in runtime_config.iteritems():
     m2ee.config._conf['mxruntime'][key] = value
-
 
 m2ee.config._conf['m2ee']['runtime_port'] = int(os.environ.get('PORT'))
 m2ee.config._conf['m2ee']['app_name'] = vcap_app['application_name']
