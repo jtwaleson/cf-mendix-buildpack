@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+exit 0
 cd "$1"
 
 echo "Detecting Mendix Custom Buildpack"
