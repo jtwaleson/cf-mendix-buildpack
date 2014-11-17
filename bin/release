@@ -1,6 +1,3 @@
 #!/usr/bin/env bash
 
-cat << EOF
-default_process_types:
-  web: echo "Starting Mendix" && python start.py
-EOF
+echo "---"
