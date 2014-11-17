@@ -88,3 +88,4 @@ rm "$build_dir/m2ee-building.yaml"
 
 cp "$buildpack_dir/m2ee.yaml" "$build_dir/.local/m2ee.yaml"
 cp "$buildpack_dir/start.py" "$build_dir/start.py"
+echo "State: 8"
