@@ -14,7 +14,7 @@ function lazyDownload() {
     target=$(basename "$url")
     if [ ! -f "$cache_dir/$target" ]; then
         echo "downloading $target"
-        curl -L --progress-bar "$url" -o "$cache_dir/$target"
+        curl -L --silent "$url" -o "$cache_dir/$target"
     else
         echo "$target already present"
     fi
