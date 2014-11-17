@@ -20,8 +20,6 @@ function lazyDownload() {
     fi
 }
 
-echo "State: 1"
-
 PRE_FLIGHT_CHECK=yes
 
 if [[ -z "$ADMIN_PASSWORD" && ! -f "$env_dir/ADMIN_PASSWORD" ]]; then
@@ -40,8 +38,6 @@ if [[ "$PRE_FLIGHT_CHECK" == "no" ]]; then
     exit 1
 fi
 
-echo "State: 2"
-
 RUNTIME_VERSION=$(cat "$build_dir/model/metadata.json" | grep RuntimeVersion | awk '{ print $2 }' | sed 's/\"//g; s/,//g; s/\n//g; s/\r//g')
 
 lazyDownload https://packages.mendix.com/debian/pool/non-free/o/oracle-j2re1.7/oracle-j2re1.7_1.7.0+update55_amd64.deb
@@ -55,16 +51,10 @@ python "$cache_dir/get-pip.py" --user
 
 mkdir -p "$cache_dir/pip"
 
-echo "State: 3"
-
 # DIRT: we need to download a custom version of PyYAML that does not try to compile libyaml
 ~/.local/bin/pip install --download-cache "$cache_dir/pip" --user http://download.mendix.com/PyYAML-3.11.tar.gz http://download.mendix.com/m2ee-tools-0.5.9.tar.gz
 
-echo "State: 4"
-
 dpkg-deb -x "$cache_dir/oracle-j2re1.7_1.7.0+update55_amd64.deb" "$build_dir/.local"
-
-echo "State: 5"
 
 ln -s "../usr/lib/jvm/j2re1.7-oracle/bin/java" "$build_dir/.local/bin/java"
 
@@ -76,16 +66,11 @@ mkdir -p $build_dir/database
 mkdir -p $build_dir/data/{files,tmp}
 tar xf "$cache_dir/mendix-${RUNTIME_VERSION}.tar.gz" -C "$build_dir/runtimes"
 
-echo "State: 6"
-
 cp "$buildpack_dir/m2ee.yaml" "$build_dir/m2ee-building.yaml"
 
 sed -i "s|BUILD_PATH|$build_dir|g" "$build_dir/m2ee-building.yaml"
-
-echo "State: 7"
 
 rm "$build_dir/m2ee-building.yaml"
 
 cp "$buildpack_dir/m2ee.yaml" "$build_dir/.local/m2ee.yaml"
 cp "$buildpack_dir/start.py" "$build_dir/start.py"
-echo "State: 8"
