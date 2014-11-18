@@ -28,6 +28,31 @@ else:
         'application_name': 'My App',
     }
 
+prefs_template = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE map SYSTEM "http://java.sun.com/dtd/preferences.dtd">
+<map MAP_XML_VERSION="1.0">
+  <entry key="id" value="{{SERVER_ID}}"/>
+  <entry key="license_key" value="{{LICENSE_KEY}}"/>
+</map>"""
+
+license = os.environ.get('LICENSE_KEY', None)
+server_id = os.environ.get('SERVER_ID', None)
+if license is not None and server_id is not None:
+    print('A license was supplied so going to activate it')
+    prefs_body = prefs_template.replace(
+        '{{SERVER_ID}}', server_id
+        ).replace(
+        '{{LICENSE_KEY}}', license
+        )
+    prefs_dir = os.path.expanduser('~/../.java/.userPrefs/com/mendix/core')
+    if not os.path.isdir(prefs_dir):
+        os.makedirs(prefs_dir)
+    with open(os.path.join(prefs_dir, 'prefs.xml'), 'w') as prefs_file:
+        prefs_file.write(prefs_body)
+
+    with open(os.path.join(prefs_dir, 'prefs.xml'), 'r') as prefs_file:
+        print(prefs_file.readlines())
+
 m2ee = M2EE(yamlfiles=['.local/m2ee.yaml'], load_default_files=False)
 
 print "Loaded m2ee config file"
@@ -95,6 +120,7 @@ m2ee.config._conf['m2ee']['javaopts'].append('-Xmx%s' % heap_size)
 m2ee.config._conf['m2ee']['javaopts'].append('-Xms%s' % heap_size)
 
 print('Java heap size set to %s' % max_memory)
+
 
 m2ee.start_appcontainer()
 if not m2ee.send_runtime_config():
