@@ -32,6 +32,7 @@ m2ee = M2EE(yamlfiles=['.local/m2ee.yaml'], load_default_files=False)
 
 print "Loaded m2ee config file"
 
+
 def sigterm_handler():
     print('stopping the process')
     m2ee.stop()
@@ -58,10 +59,6 @@ for constant in metadata['Constants']:
     if constant['Type'] == 'Integer':
         value = int(value)
     constants[constant['Name']] = value
-
-constants['AppCloudServices.OpenIdEnabled'] = True
-constants['AppCloudServices.EnvironmentUUID'] = '2a1495c6-5ead-49a7-ae75-7c9ca48b6b5a'
-constants['AppCloudServices.EnvironmentPassword'] = 'AZCQFam*@m[)=E!l35\'g'
 
 db_url = os.environ.get('DATABASE_URL')
 pattern = r'postgres://([^:]+):([^@]+)@([^/]+)/(.*)'
