@@ -77,7 +77,7 @@ fi
 echo $cache_dir
 ls -l "$cache_dir"
 checkpoint "copying java"
-cp -a "$jre_dir/*" "$build_dir/.local/"
+cp -a "$jre_dir/." "$build_dir/.local"
 checkpoint "end unpack JRE"
 
 ln -s "../usr/lib/jvm/j2re1.7-oracle/bin/java" "$build_dir/.local/bin/java"
