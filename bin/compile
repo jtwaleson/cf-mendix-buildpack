@@ -67,6 +67,8 @@ checkpoint "begin install pyyaml"
 ~/.local/bin/pip install --download-cache "$cache_dir/pip" --user http://download.mendix.com/PyYAML-3.11.tar.gz http://download.mendix.com/m2ee-tools-0.5.9.tar.gz
 checkpoint "end install pyyaml"
 
+ls -l "$cache_dir"
+
 checkpoint "begin unpack JRE"
 jre_dir="$cache_dir/oracle-jre-1.7-update55"
 if [[ ! -d "$jre_dir" ]]; then
