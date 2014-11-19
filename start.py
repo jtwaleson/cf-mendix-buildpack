@@ -50,9 +50,6 @@ if license is not None and server_id is not None:
     with open(os.path.join(prefs_dir, 'prefs.xml'), 'w') as prefs_file:
         prefs_file.write(prefs_body)
 
-    with open(os.path.join(prefs_dir, 'prefs.xml'), 'r') as prefs_file:
-        print(prefs_file.readlines())
-
 m2ee = M2EE(yamlfiles=['.local/m2ee.yaml'], load_default_files=False)
 
 print "Loaded m2ee config file"
