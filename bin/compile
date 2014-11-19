@@ -20,6 +20,11 @@ function lazyDownload() {
     fi
 }
 
+function checkpoint() {
+    msg="$1"
+    echo "$(date) ==> $msg"
+}
+
 PRE_FLIGHT_CHECK=yes
 
 if [[ -z "$ADMIN_PASSWORD" && ! -f "$env_dir/ADMIN_PASSWORD" ]]; then
@@ -40,21 +45,31 @@ fi
 
 RUNTIME_VERSION=$(cat "$build_dir/model/metadata.json" | grep RuntimeVersion | awk '{ print $2 }' | sed 's/\"//g; s/,//g; s/\n//g; s/\r//g')
 
+checkpoint "begin downloads: JRE"
 lazyDownload https://packages.mendix.com/debian/pool/non-free/o/oracle-j2re1.7/oracle-j2re1.7_1.7.0+update55_amd64.deb
+checkpoint "get-pip.py"
 lazyDownload https://download.mendix.com/get-pip.py
+checkpoint "mendix-runtime"
 lazyDownload https://download.mendix.com/runtimes/mendix-${RUNTIME_VERSION}.tar.gz
+checkpoint "end downloads"
 
 # we set the homedir to the build_dir, so pip will install to $build_dir/.local
 export HOME="$build_dir"
 
+checkpoint "begin install pip"
 python "$cache_dir/get-pip.py" --user
+checkpoint "end install pip"
 
 mkdir -p "$cache_dir/pip"
 
 # DIRT: we need to download a custom version of PyYAML that does not try to compile libyaml
+checkpoint "begin install pyyaml"
 ~/.local/bin/pip install --download-cache "$cache_dir/pip" --user http://download.mendix.com/PyYAML-3.11.tar.gz http://download.mendix.com/m2ee-tools-0.5.9.tar.gz
+checkpoint "end install pyyaml"
 
+checkpoint "begin unpack JRE"
 dpkg-deb -x "$cache_dir/oracle-j2re1.7_1.7.0+update55_amd64.deb" "$build_dir/.local"
+checkpoint "end unpack JRE"
 
 ln -s "../usr/lib/jvm/j2re1.7-oracle/bin/java" "$build_dir/.local/bin/java"
 
@@ -64,7 +79,9 @@ mv "$build_dir/.local/bin/m2ee.py" "$build_dir/.local/bin/m2ee"
 mkdir -p $build_dir/{runtimes,log}
 mkdir -p $build_dir/database
 mkdir -p $build_dir/data/{files,tmp}
+checkpoint "begin unpack runtime"
 tar xf "$cache_dir/mendix-${RUNTIME_VERSION}.tar.gz" -C "$build_dir/runtimes"
+checkpoint "end unpack runtime"
 
 cp "$buildpack_dir/m2ee.yaml" "$build_dir/m2ee-building.yaml"
 
