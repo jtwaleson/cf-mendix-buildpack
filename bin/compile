@@ -68,7 +68,12 @@ checkpoint "begin install pyyaml"
 checkpoint "end install pyyaml"
 
 checkpoint "begin unpack JRE"
-dpkg-deb -x "$cache_dir/oracle-j2re1.7_1.7.0+update55_amd64.deb" "$build_dir/.local"
+jre_dir="$cache_dir/oracle-jre-1.7-update55"
+if [[ ! -d "jre_dir" ]]; then
+    dpkg-deb -x "$cache_dir/oracle-j2re1.7_1.7.0+update55_amd64.deb" "$jre_dir"
+fi
+checkpoint "copying java"
+cp -a "$jre_dir/*" "$build_dir/.local/"
 checkpoint "end unpack JRE"
 
 ln -s "../usr/lib/jvm/j2re1.7-oracle/bin/java" "$build_dir/.local/bin/java"
@@ -80,7 +85,12 @@ mkdir -p $build_dir/{runtimes,log}
 mkdir -p $build_dir/database
 mkdir -p $build_dir/data/{files,tmp}
 checkpoint "begin unpack runtime"
-tar xf "$cache_dir/mendix-${RUNTIME_VERSION}.tar.gz" -C "$build_dir/runtimes"
+runtime_dir="$cache_dir/${RUNTIME_VERSION}"
+if [[ ! -d $runtime_dir ]]; then
+    tar xf "$cache_dir/mendix-${RUNTIME_VERSION}.tar.gz" -C "$runtime_dir"
+fi
+checkpoint "copy runtime"
+cp -a "$runtime_dir" "$build_dir/runtimes/"
 checkpoint "end unpack runtime"
 
 cp "$buildpack_dir/m2ee.yaml" "$build_dir/m2ee-building.yaml"
