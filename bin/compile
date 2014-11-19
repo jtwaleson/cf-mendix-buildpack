@@ -69,7 +69,7 @@ checkpoint "end install pyyaml"
 
 checkpoint "begin unpack JRE"
 jre_dir="$cache_dir/oracle-jre-1.7-update55"
-if [[ ! -d "jre_dir" ]]; then
+if [[ ! -d "$jre_dir" ]]; then
     dpkg-deb -x "$cache_dir/oracle-j2re1.7_1.7.0+update55_amd64.deb" "$jre_dir"
 fi
 checkpoint "copying java"
@@ -86,7 +86,7 @@ mkdir -p $build_dir/database
 mkdir -p $build_dir/data/{files,tmp}
 checkpoint "begin unpack runtime"
 runtime_dir="$cache_dir/${RUNTIME_VERSION}"
-if [[ ! -d $runtime_dir ]]; then
+if [[ ! -d "$runtime_dir" ]]; then
     tar xf "$cache_dir/mendix-${RUNTIME_VERSION}.tar.gz" -C "$runtime_dir"
 fi
 checkpoint "copy runtime"
