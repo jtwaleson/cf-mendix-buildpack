@@ -74,8 +74,6 @@ if [[ ! -d "$jre_dir" ]]; then
     checkpoint "running dpkg-deb ..."
     dpkg-deb -x "$cache_dir/oracle-j2re1.7_1.7.0+update55_amd64.deb" "$jre_dir"
 fi
-echo $cache_dir
-ls -l "$cache_dir"
 checkpoint "copying java"
 cp -a "$jre_dir/." "$build_dir/.local"
 checkpoint "end unpack JRE"
@@ -91,7 +89,7 @@ mkdir -p $build_dir/data/{files,tmp}
 checkpoint "begin unpack runtime"
 runtime_dir="$cache_dir/${RUNTIME_VERSION}"
 if [[ ! -d "$runtime_dir" ]]; then
-    tar xf "$cache_dir/mendix-${RUNTIME_VERSION}.tar.gz" -C "$runtime_dir"
+    tar xf "$cache_dir/mendix-${RUNTIME_VERSION}.tar.gz" -C "$cache_dir"
 fi
 checkpoint "copy runtime"
 cp -a "$runtime_dir" "$build_dir/runtimes/"
