@@ -67,7 +67,6 @@ checkpoint "begin install pyyaml"
 ~/.local/bin/pip install --download-cache "$cache_dir/pip" --user http://download.mendix.com/PyYAML-3.11.tar.gz http://download.mendix.com/m2ee-tools-0.5.9.tar.gz
 checkpoint "end install pyyaml"
 
-ls -l "$cache_dir"
 
 checkpoint "begin unpack JRE"
 jre_dir="$cache_dir/oracle-jre-1.7-update55"
@@ -75,6 +74,8 @@ if [[ ! -d "$jre_dir" ]]; then
     checkpoint "running dpkg-deb ..."
     dpkg-deb -x "$cache_dir/oracle-j2re1.7_1.7.0+update55_amd64.deb" "$jre_dir"
 fi
+echo $cache_dir
+ls -l "$cache_dir"
 checkpoint "copying java"
 cp -a "$jre_dir/*" "$build_dir/.local/"
 checkpoint "end unpack JRE"
