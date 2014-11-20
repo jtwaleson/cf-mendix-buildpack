@@ -9,20 +9,41 @@ env_dir="$3"
 
 mkdir -p $cache_dir
 
-function lazyDownload() {
+function lazyDownloadAndUnpack() {
     url="$1"
+    dest="$2"
     target=$(basename "$url")
-    if [ ! -f "$cache_dir/$target" ]; then
-        echo "downloading $target"
-        curl -L --silent "$url" -o "$cache_dir/$target"
+    cached="$cache_dir/$target"
+    cached_unpacked="$cache_dir/$target-unpacked"
+    echo "Processing $target"
+    if [ ! -f "$cached" ]; then
+        echo "Downloading $target"
+        curl -L --silent "$url" -o "$cached"
     else
-        echo "$target already present"
+        echo "$target already present, skipping"
     fi
+
+    if [ ! -z "$dest" && ! -d "$cached_unpacked" ]; then
+        unpacked=0
+        echo "Unpacking $target to cache"
+        echo "$target" | grep '\.deb$' && dpkg-deb -x "$cached" "$cached_unpacked" && unpacked=1
+        echo "$target" | grep '^mendix-.*\.tar\.gz$' && mkdir $cached_unpacked && tar xf "$cached" -C "$cached_unpacked" && unpacked=1
+
+        if [ $unpacked == 1 ]; then
+            rm -r $cached && touch $cached
+        fi
+    fi
+
+    if [ ! -z "$dest" ]; then
+        echo "Copying $cached_unpacked to $dest"
+        cp -a $cached_unpacked/. $dest
+    fi
+    echo "Done processing $target"
 }
 
 function checkpoint() {
     msg="$1"
-    echo "$(date) ==> $msg"
+    echo "==> $msg"
 }
 
 PRE_FLIGHT_CHECK=yes
@@ -45,20 +66,11 @@ fi
 
 RUNTIME_VERSION=$(cat "$build_dir/model/metadata.json" | grep RuntimeVersion | awk '{ print $2 }' | sed 's/\"//g; s/,//g; s/\n//g; s/\r//g')
 
-checkpoint "begin downloads: JRE"
-lazyDownload https://packages.mendix.com/debian/pool/non-free/o/oracle-j2re1.7/oracle-j2re1.7_1.7.0+update55_amd64.deb
-checkpoint "get-pip.py"
-lazyDownload https://download.mendix.com/get-pip.py
-checkpoint "mendix-runtime"
-lazyDownload https://download.mendix.com/runtimes/mendix-${RUNTIME_VERSION}.tar.gz
-checkpoint "end downloads"
-
 # we set the homedir to the build_dir, so pip will install to $build_dir/.local
 export HOME="$build_dir"
 
-checkpoint "begin install pip"
+lazyDownloadAndUnpack "https://download.mendix.com/get-pip.py"
 python "$cache_dir/get-pip.py" --user
-checkpoint "end install pip"
 
 mkdir -p "$cache_dir/pip"
 
@@ -68,15 +80,11 @@ checkpoint "begin install pyyaml"
 checkpoint "end install pyyaml"
 
 
-checkpoint "begin unpack JRE"
-jre_dir="$cache_dir/oracle-jre-1.7-update55"
 if [[ ! -d "$jre_dir" ]]; then
     checkpoint "running dpkg-deb ..."
     dpkg-deb -x "$cache_dir/oracle-j2re1.7_1.7.0+update55_amd64.deb" "$jre_dir"
 fi
-checkpoint "copying java"
-cp -a "$jre_dir/." "$build_dir/.local"
-checkpoint "end unpack JRE"
+lazyDownloadAndUnpack "https://packages.mendix.com/debian/pool/non-free/o/oracle-j2re1.7/oracle-j2re1.7_1.7.0+update55_amd64.deb" "$build_dir/.local/"
 
 ln -s "../usr/lib/jvm/j2re1.7-oracle/bin/java" "$build_dir/.local/bin/java"
 
@@ -86,14 +94,7 @@ mv "$build_dir/.local/bin/m2ee.py" "$build_dir/.local/bin/m2ee"
 mkdir -p $build_dir/{runtimes,log}
 mkdir -p $build_dir/database
 mkdir -p $build_dir/data/{files,tmp}
-checkpoint "begin unpack runtime"
-runtime_dir="$cache_dir/${RUNTIME_VERSION}"
-if [[ ! -d "$runtime_dir" ]]; then
-    tar xf "$cache_dir/mendix-${RUNTIME_VERSION}.tar.gz" -C "$cache_dir"
-fi
-checkpoint "copy runtime"
-cp -a "$runtime_dir" "$build_dir/runtimes/"
-checkpoint "end unpack runtime"
+lazyDownloadAndUnpack "https://download.mendix.com/runtimes/mendix-${RUNTIME_VERSION}.tar.gz" "$build_dir/runtimes/"
 
 cp "$buildpack_dir/m2ee.yaml" "$build_dir/m2ee-building.yaml"
 
@@ -103,3 +104,6 @@ rm "$build_dir/m2ee-building.yaml"
 
 cp "$buildpack_dir/m2ee.yaml" "$build_dir/.local/m2ee.yaml"
 cp "$buildpack_dir/start.py" "$build_dir/start.py"
+
+echo "Contents of cache:"
+ls -l $cache_dir
