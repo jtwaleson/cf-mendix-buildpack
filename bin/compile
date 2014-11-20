@@ -23,7 +23,7 @@ function lazyDownloadAndUnpack() {
         echo "$target already present, skipping"
     fi
 
-    if [ ! -z "$dest" && ! -d "$cached_unpacked" ]; then
+    if [ ! -z "$dest" -a ! -d "$cached_unpacked" ]; then
         unpacked=0
         echo "Unpacking $target to cache"
         echo "$target" | grep '\.deb$' && dpkg-deb -x "$cached" "$cached_unpacked" && unpacked=1
