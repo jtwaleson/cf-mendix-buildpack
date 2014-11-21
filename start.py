@@ -120,17 +120,17 @@ m2ee.config._conf['m2ee']['javaopts'].append('-Xms%s' % heap_size)
 
 print('Java heap size set to %s' % max_memory)
 
-fs_env = 'STACKATO_FILESYSTEM_%s_FS' % os.environ.get('STACKATO_APP_NAME_UPCASE')
+fs_env = 'STACKATO_FILESYSTEM_%s_FS' % os.environ.get('STACKATO_APP_NAME_UPCASE', None)
 
-application_file_directory = os.path.join('/', 'app', 'data', 'files')
-persistent_file_directory = os.environ.get(fs_env)
-
-if os.path.isdir(persistent_file_directory):
-    if os.path.isdir(application_file_directory):
-        os.rmdir(application_file_directory)
-    os.symlink(persistent_file_directory, application_file_directory)
-else:
-    print "Uploaded files will be removed when the application is restarted"
+if fs_env is not None:
+    application_file_directory = os.path.join('/', 'app', 'data', 'files')
+    persistent_file_directory = os.environ.get(fs_env)
+    if os.path.isdir(persistent_file_directory):
+        if os.path.isdir(application_file_directory):
+            os.rmdir(application_file_directory)
+        os.symlink(persistent_file_directory, application_file_directory)
+    else:
+        print "Uploaded files will be removed when the application is restarted"
 
 m2ee.start_appcontainer()
 if not m2ee.send_runtime_config():
