@@ -35,6 +35,8 @@ prefs_template = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
   <entry key="license_key" value="{{LICENSE_KEY}}"/>
 </map>"""
 
+print "HELION FS: %s" % os.environ.get('HELION_FILESYSTEM')
+
 license = os.environ.get('LICENSE_KEY', None)
 server_id = os.environ.get('SERVER_ID', None)
 if license is not None and server_id is not None:
