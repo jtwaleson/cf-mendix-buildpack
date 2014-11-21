@@ -106,6 +106,8 @@ for key, value in runtime_config.iteritems():
 m2ee.config._conf['m2ee']['runtime_port'] = int(os.environ.get('PORT'))
 m2ee.config._conf['m2ee']['app_name'] = vcap_app['application_name']
 
+print "Application name is %s" % m2ee.config._conf['m2ee']['app_name']
+
 max_memory = os.environ.get('MEMORY_LIMIT', '512m').upper()
 
 match = re.search('([0-9]+)([A-Z])', max_memory)
