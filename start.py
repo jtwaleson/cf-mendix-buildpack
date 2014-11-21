@@ -108,8 +108,8 @@ m2ee.config._conf['m2ee']['app_name'] = vcap_app['application_name']
 
 print "Application name is %s" % m2ee.config._conf['m2ee']['app_name']
 
-persistent_file_directory = os.path.join('fs', '%s-fs' % m2ee.config._conf['m2ee']['app_name'])
-application_file_directory = os.path.join('app', 'data', 'files')
+persistent_file_directory = os.path.join('/', 'fs', '%s-fs' % m2ee.config._conf['m2ee']['app_name'])
+application_file_directory = os.path.join('/', 'app', 'data', 'files')
 
 print "persistent_file_directory %s" % persistent_file_directory
 print "application_file_directory %s" % application_file_directory
