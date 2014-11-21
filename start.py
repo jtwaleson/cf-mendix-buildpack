@@ -129,7 +129,7 @@ print "application_file_directory %s" % application_file_directory
 print os.path.isdir(persistent_file_directory)
 print os.path.isdir(application_file_directory)
 
-print os.listdir('/')
+print os.listdir('/app')
 
 if os.path.isdir(persistent_file_directory):
     if os.path.isdir(application_file_directory):
