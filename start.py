@@ -108,20 +108,6 @@ m2ee.config._conf['m2ee']['app_name'] = vcap_app['application_name']
 
 print "Application name is %s" % m2ee.config._conf['m2ee']['app_name']
 
-persistent_file_directory = os.path.join('/', 'fs', '%s-fs' % m2ee.config._conf['m2ee']['app_name'])
-application_file_directory = os.path.join('/', 'app', 'data', 'files')
-
-print "persistent_file_directory %s" % persistent_file_directory
-print "application_file_directory %s" % application_file_directory
-
-print os.path.isdir(persistent_file_directory)
-print os.path.isdir(application_file_directory)
-
-if os.path.isdir(persistent_file_directory) and os.path.isdir(application_file_directory):
-    os.symlink(application_file_directory, persistent_file_directory)
-else:
-    print "Uploaded files will be removed when the application is restarted"
-
 max_memory = os.environ.get('MEMORY_LIMIT', '512m').upper()
 
 match = re.search('([0-9]+)([A-Z])', max_memory)
@@ -138,6 +124,21 @@ print('Java heap size set to %s' % max_memory)
 m2ee.start_appcontainer()
 if not m2ee.send_runtime_config():
     sys.exit(1)
+
+persistent_file_directory = os.path.join('/', 'fs', '%s-fs' % m2ee.config._conf['m2ee']['app_name'])
+application_file_directory = os.path.join('/', 'app', 'data', 'files')
+
+print "persistent_file_directory %s" % persistent_file_directory
+print "application_file_directory %s" % application_file_directory
+
+print os.path.isdir(persistent_file_directory)
+print os.path.isdir(application_file_directory)
+
+if os.path.isdir(persistent_file_directory) and os.path.isdir(application_file_directory):
+    os.symlink(application_file_directory, persistent_file_directory)
+else:
+    print "Uploaded files will be removed when the application is restarted"
+
 
 print "Appcontainer has been started"
 
