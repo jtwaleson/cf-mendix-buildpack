@@ -108,6 +108,13 @@ m2ee.config._conf['m2ee']['app_name'] = vcap_app['application_name']
 
 print "Application name is %s" % m2ee.config._conf['m2ee']['app_name']
 
+persistent_file_directory = os.path.join('fs', '%s-fs' % m2ee.config._conf['m2ee']['app_name'])
+application_file_directory = os.path.join('app', 'data', 'files')
+if os.path.isdir(persistent_file_directory) and os.path.isdir(application_file_directory):
+    os.symlink(application_file_directory, persistent_file_directory)
+else:
+    print "Uploaded files will be removed when the application is restarted"
+
 max_memory = os.environ.get('MEMORY_LIMIT', '512m').upper()
 
 match = re.search('([0-9]+)([A-Z])', max_memory)
