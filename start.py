@@ -110,15 +110,6 @@ for constant in metadata['Constants']:
     constants[constant['Name']] = value
 
 db_url = os.environ.get('DATABASE_URL')
-pattern = r'postgres://([^:]+):([^@]+)@([^/]+)/(.*)'
-match = re.search(pattern, db_url)
-
-if match is None:
-    raise Exception(
-        "Could not parse DATABASE_URL environment variable %s" % db_url
-    )
-
-db_url = os.environ.get('DATABASE_URL')
 database_config = get_database_config(db_url)
 application_config = {
     'ApplicationRootUrl': 'https://%s' % vcap_app['application_uris'][0],
