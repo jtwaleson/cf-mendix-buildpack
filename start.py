@@ -121,7 +121,7 @@ m2ee.config._conf['m2ee']['javaopts'].append('-Xms%s' % heap_size)
 print('Java heap size set to %s' % max_memory)
 
 application_file_directory = os.path.join('/', 'app', 'data', 'files')
-persistent_file_directory = os.environment.get(STACKATO_FILESYSTEM)
+persistent_file_directory = os.environ.get(STACKATO_FILESYSTEM)
 
 if os.path.isdir(persistent_file_directory):
     if os.path.isdir(application_file_directory):
