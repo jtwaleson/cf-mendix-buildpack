@@ -37,6 +37,9 @@ prefs_template = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 
 print "HELION FS: %s" % os.environ.get('HELION_FILESYSTEM')
 
+for key in os.environ.keys():
+    print "%30s %s \n" % (key,os.environ[key])
+
 license = os.environ.get('LICENSE_KEY', None)
 server_id = os.environ.get('SERVER_ID', None)
 if license is not None and server_id is not None:
