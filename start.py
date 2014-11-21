@@ -110,6 +110,13 @@ print "Application name is %s" % m2ee.config._conf['m2ee']['app_name']
 
 persistent_file_directory = os.path.join('fs', '%s-fs' % m2ee.config._conf['m2ee']['app_name'])
 application_file_directory = os.path.join('app', 'data', 'files')
+
+print "persistent_file_directory %s" % persistent_file_directory
+print "application_file_directory %s" % application_file_directory
+
+print os.path.isdir(persistent_file_directory)
+print os.path.isdir(application_file_directory)
+
 if os.path.isdir(persistent_file_directory) and os.path.isdir(application_file_directory):
     os.symlink(application_file_directory, persistent_file_directory)
 else:
