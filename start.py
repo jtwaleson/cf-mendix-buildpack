@@ -8,6 +8,9 @@ import sys
 import time
 from m2ee import M2EE, logger
 
+#STACKATO_APP_NAME_UPCASE
+#STACKATO_FILESYSTEM_FRITS_FS
+
 print "Started Mendix Cloud Foundry Buildpack"
 
 logger.setLevel(20)
@@ -120,8 +123,10 @@ m2ee.config._conf['m2ee']['javaopts'].append('-Xms%s' % heap_size)
 
 print('Java heap size set to %s' % max_memory)
 
+fs_env = 'STACKATO_FILESYSTEM_%s_FS' % STACKATO_APP_NAME_UPCASE
+
 application_file_directory = os.path.join('/', 'app', 'data', 'files')
-persistent_file_directory = os.environ.get(STACKATO_FILESYSTEM)
+persistent_file_directory = os.environ.get(fs_env)
 
 if os.path.isdir(persistent_file_directory):
     if os.path.isdir(application_file_directory):
