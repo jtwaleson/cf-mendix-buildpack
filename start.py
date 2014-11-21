@@ -122,9 +122,10 @@ print('Java heap size set to %s' % max_memory)
 
 fs_env = 'STACKATO_FILESYSTEM_%s_FS' % os.environ.get('STACKATO_APP_NAME_UPCASE', None)
 
-if fs_env is not None:
-    application_file_directory = os.path.join('/', 'app', 'data', 'files')
-    persistent_file_directory = os.environ.get(fs_env)
+application_file_directory = os.path.join('/', 'app', 'data', 'files')
+persistent_file_directory = os.environ.get(fs_env)
+
+if persistent_file_directory is not None:
     if os.path.isdir(persistent_file_directory):
         if os.path.isdir(application_file_directory):
             os.rmdir(application_file_directory)
