@@ -127,7 +127,7 @@ persistent_file_directory = os.environ.get(fs_env)
 
 if os.path.isdir(persistent_file_directory):
     if os.path.isdir(application_file_directory):
-        os.remove(application_file_directory)
+        os.rmdir(application_file_directory)
     os.symlink(persistent_file_directory, application_file_directory)
 else:
     print "Uploaded files will be removed when the application is restarted"
