@@ -28,6 +28,33 @@ else:
         'application_name': 'My App',
     }
 
+
+def get_database_config(url):
+    pattern = r'([a-zA-Z]+)://([^:]+):([^@]+)@([^/]+)/(.*)'
+    match = re.search(pattern, url)
+    type_map = {
+        'postgres':  'PostgreSQL',
+        'mysql': 'MySQL',
+    }
+
+    if match is None:
+        raise Exception(
+            "Could not parse DATABASE_URL environment variable %s" % url
+        )
+
+    database_type_input = match.group(1)
+    if match.group(1) not in type_map:
+        raise Exception("Unknown database type: %s", database_type_input)
+    database_type = type_map[database_type_input]
+
+    return {
+        'DatabaseType': database_type,
+        'DatabaseUserName': match.group(2),
+        'DatabasePassword': match.group(3),
+        'DatabaseHost': match.group(4),
+        'DatabaseName': match.group(5),
+    }
+
 prefs_template = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE map SYSTEM "http://java.sun.com/dtd/preferences.dtd">
 <map MAP_XML_VERSION="1.0">
@@ -83,22 +110,13 @@ for constant in metadata['Constants']:
     constants[constant['Name']] = value
 
 db_url = os.environ.get('DATABASE_URL')
-pattern = r'postgres://([^:]+):([^@]+)@([^/]+)/(.*)'
-match = re.search(pattern, db_url)
-
-if match is None:
-    raise Exception(
-        "Could not parse DATABASE_URL environment variable %s" % db_url
-    )
-runtime_config = {
-    'DatabaseType': 'PostgreSQL',
-    'DatabaseUserName': match.group(1),
-    'DatabasePassword': match.group(2),
-    'DatabaseHost': match.group(3),
-    'DatabaseName': match.group(4),
+database_config = get_database_config(db_url)
+application_config = {
     'ApplicationRootUrl': 'https://%s' % vcap_app['application_uris'][0],
     'MicroflowConstants': constants,
 }
+
+runtime_config = dict(database_config.items() + application_config.items())
 
 for key, value in runtime_config.iteritems():
     m2ee.config._conf['mxruntime'][key] = value
