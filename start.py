@@ -148,8 +148,12 @@ if persistent_file_directory is not None:
         if os.path.isdir(application_file_directory):
             os.rmdir(application_file_directory)
         os.symlink(persistent_file_directory, application_file_directory)
+    print "persistent files?: Yes."
     else:
         print "Uploaded files will be removed when the application is restarted"
+else:
+    print "persistent files? No."
+
 
 m2ee.start_appcontainer()
 if not m2ee.send_runtime_config():
