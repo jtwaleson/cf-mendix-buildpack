@@ -1,11 +1,10 @@
 mxnode:
  mxjar_repo: BUILD_PATH/runtimes/
- download_runtime_url: "https://download.mendix.com/runtimes/"
 
 m2ee:
  app_name: My Project Name
  app_base: BUILD_PATH/
- admin_port: 9000
+ admin_port: ADMIN_PORT
  admin_listen_addresses: "127.0.0.1"
  custom_environment:
   HOME: BUILD_PATH
@@ -18,6 +17,7 @@ m2ee:
  pidfile: BUILD_PATH/process.pid
 
  runtime_blocking_connector: true
+ preserve_environment: true
 
  javaopts: [
     "-Dfile.encoding=UTF-8",
@@ -42,16 +42,10 @@ logging:
    max_rotation: 10
 
 mxruntime:
- DTAPMode: D
+ DTAPMode: P
  ApplicationRootUrl: https://APP_URI/
 
  MicroflowConstants:
   Module.Constant: text
 
  ScheduledEventExecution: ALL
-
- DatabaseType: HSQLDB
- DatabaseName: default
- DatabasePassword: "1"
- DatabaseUseSsl: False
- SessionTimeout: 600000
