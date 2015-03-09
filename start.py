@@ -16,6 +16,9 @@ logger.setLevel(logging.INFO)
 logger.info('Started Mendix Cloud Foundry Buildpack')
 
 
+subprocess.call(['which', 'sshfs'])
+
+
 def pre_process_m2ee_yaml():
     runtime_port = int(os.environ['PORT'])
 

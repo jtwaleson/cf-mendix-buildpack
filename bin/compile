@@ -25,6 +25,9 @@ import requests
 logging.getLogger("requests").setLevel(logging.WARNING)
 
 
+subprocess.call(['which', 'sshfs'])
+
+
 def download(url, destination):
     logging.debug('downloading {url}'.format(url=url))
     with open(destination, 'w') as file_handle:
