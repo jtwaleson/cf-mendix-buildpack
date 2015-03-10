@@ -43,3 +43,19 @@ def get_new_relic_license_key():
     if vcap_services and 'newrelic' in vcap_services:
         return vcap_services['newrelic'][0]['credentials']['licenseKey']
     return None
+
+
+def get_s3fs_args(mountpoint):
+    key_id = os.environ.get('AWSACCESSKEYID')
+    key_secret = os.environ.get('AWSSECRETACCESSKEY')
+    bucket_name = os.environ.get('BUCKET_NAME')
+    cwd = os.getcwd()
+    os.umask(0000)
+    cache = os.path.join(cwd, 'tmp')
+    if key_id and key_secret and bucket_name:
+        s3fs = [bucket_name, mountpoint]
+        # s3fs.extend(['-o', 'umask=0000'])
+        s3fs.extend(['-o', 'use_cache={cache}'.format(cache=cache)])
+        s3fs.extend(['-o', 'del_cache'])
+        return s3fs
+    return None

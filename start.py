@@ -14,6 +14,7 @@ import logging
 logger.setLevel(logging.INFO)
 
 logger.info('Started Mendix Cloud Foundry Buildpack')
+build_path = os.getcwd()
 
 
 def pre_process_m2ee_yaml():
@@ -23,7 +24,7 @@ def pre_process_m2ee_yaml():
         'sed',
         '-i',
         's|BUILD_PATH|%s|g; s|RUNTIME_PORT|%d|; s|ADMIN_PORT|%d|'
-        % (os.getcwd(), runtime_port, runtime_port + 1),
+        % (build_path, runtime_port, runtime_port + 1),
         '.local/m2ee.yaml'
     ])
 
@@ -251,6 +252,20 @@ def display_running_version(m2ee):
             logger.info('Model version: %s' % feedback['model_version'])
 
 
+def mount_s3fs():
+    mountpoint = os.path.join(build_path, 'data', 'files')
+    s3fs_bin = os.path.join(build_path, '.local', 'bin', 's3fs')
+    args = buildpackutil.get_s3fs_args(mountpoint)
+    if args:
+        logger.debug('Attempting to mount s3 bucket at {mountpoint}'.format(
+            mountpoint=mountpoint
+            ))
+        cmd = [s3fs_bin] + args
+        logger.debug(cmd)
+        subprocess.check_call(cmd)
+        logger.info('Mounted s3 bucket')
+
+
 def loop_until_process_dies(m2ee):
     while m2ee.runner.check_pid():
         time.sleep(10)
@@ -260,6 +275,7 @@ def loop_until_process_dies(m2ee):
 
 if __name__ == '__main__':
     pre_process_m2ee_yaml()
+    mount_s3fs()
     activate_license()
     set_up_logging_file()
     m2ee = set_up_m2ee_client(get_vcap_data())
