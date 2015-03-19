@@ -306,6 +306,8 @@ def run_mx_build():
 
 
 if __name__ == '__main__':
+    subprocess.call(['free', '-m'])
+    subprocess.call(['cat', '/proc/meminfo'])
     preflight_check()
     if is_source_push():
         logging.info('source push detected')
