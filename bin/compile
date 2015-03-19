@@ -262,6 +262,7 @@ def set_up_mx_build():
 
 
 def run_mx_build():
+    subprocess.call(['free', '-m'])
     env = dict(os.environ)
     env['LD_LIBRARY_PATH'] = os.path.join(BUILDPACK_DIR, 'lib', 'mono-lib')
     subprocess.check_call([
