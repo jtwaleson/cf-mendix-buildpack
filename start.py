@@ -264,6 +264,12 @@ def mount_s3fs():
         logger.debug(cmd)
         subprocess.check_call(cmd)
         logger.info('Mounted s3 bucket')
+        testfile = os.path.join(mountpoint, 'testing')
+        if os.path.isfile(testfile):
+            with open(testfile, 'r') as fin:
+                print fin.read()
+        with open(testfile, 'a') as fout:
+            fout.write(time.strftime("s3fs mounted at %H:%M:%S\n"))
 
 
 def loop_until_process_dies(m2ee):
