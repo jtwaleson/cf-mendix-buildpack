@@ -259,7 +259,7 @@ def mount_s3fs():
     if args:
         logger.debug('Attempting to mount s3 bucket at {mountpoint}'.format(
             mountpoint=mountpoint
-            ))
+        ))
         cmd = [s3fs_bin] + args
         logger.debug(cmd)
         subprocess.check_call(cmd)

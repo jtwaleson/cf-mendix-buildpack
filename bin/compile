@@ -201,6 +201,11 @@ def copy_buildpack_resources():
             os.path.join(BUILDPACK_DIR, 'newrelic'),
             os.path.join(BUILD_DIR, 'newrelic'),
         )
+    if buildpackutil.get_s3fs_args('/tmp/bogus'):
+        shutil.copy(
+            os.path.join(BUILDPACK_DIR, 's3fs'),
+            os.path.join(LOCAL_BIN, 's3fs'),
+        )
 
 
 def get_mpr_file():
@@ -299,31 +304,6 @@ def run_mx_build():
         zf.close()
 
 
-def set_up_s3fs():
-    version = '1.78'
-    download_and_unpack(
-        'http://cdn.mendix.com/mx-buildpack/s3fs-fuse-{version}-1.tar.gz'.format(version=version),
-        CACHE_DIR
-    )
-
-    s3fs_bin = os.path.join(
-        CACHE_DIR,
-        's3fs-fuse-{version}'.format(version=version),
-        'src',
-        's3fs'
-    )
-    if not os.path.exists(s3fs_bin):
-        subprocess.check_call([
-            'bash',
-            '-c',
-            'cd {dir}/s3fs-fuse-{version}/src && make'.format(dir=CACHE_DIR, version=version)
-        ])
-    shutil.copy(
-        s3fs_bin,
-        os.path.join(LOCAL_BIN, 's3fs')
-    )
-
-
 if __name__ == '__main__':
     preflight_check()
     if is_source_push():
@@ -334,7 +314,6 @@ if __name__ == '__main__':
         run_mx_build()
     set_up_directory_structure()
     set_up_java()
-    set_up_s3fs()
     download_mendix_version()
     copy_buildpack_resources()
     logging.info('buildpack compile completed')
