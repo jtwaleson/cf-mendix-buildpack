@@ -156,6 +156,24 @@ def set_up_logging_file():
 
 def start_app(m2ee):
     m2ee.start_appcontainer()
+    if (
+            os.getenv('S3_ACCESS_KEY_ID')
+            and os.getenv('S3_SECRET_ACCESS_KEY')
+            and os.getenv('S3_BUCKET_NAME')
+            and os.getenv('S3_KEY_SUFFIX')
+    ):
+        config = m2ee.config._conf
+        logger.info(
+            'S3 config detected, activating s3 file store and JSESSIONID'
+        )
+        config['com.mendix.core.StorageService'] = 'com.mendix.storage.s3'
+        config['com.mendix.storage.s3.AccessKeyId'] = os.getenv('S3_ACCESS_KEY_ID')
+        config['com.mendix.storage.s3.SecretAccessKey'] = os.getenv('S3_SECRET_ACCESS_KEY')
+        config['com.mendix.storage.s3.BucketName'] = os.getenv('S3_BUCKET_NAME')
+        config['com.mendix.storage.s3.ResourceNameSuffix'] = os.getenv('S3_KEY_SUFFIX')
+        config['com.mendix.storage.s3.PerformDeleteFromStorage'] = False
+        config['com.mendix.core.SessionIdCookieName'] = 'JSESSIONID'
+
     if not m2ee.send_runtime_config():
         sys.exit(1)
 

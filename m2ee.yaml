@@ -44,8 +44,6 @@ logging:
 mxruntime:
  DTAPMode: P
  ApplicationRootUrl: https://APP_URI/
- com.mendix.core.SessionIdCookieName: JSESSIONID
- com.mendix.core.StorageService: com.mendix.storage.s3
 
  MicroflowConstants: {}
 
