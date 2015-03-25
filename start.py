@@ -162,7 +162,7 @@ def start_app(m2ee):
             and os.getenv('S3_BUCKET_NAME')
             and os.getenv('S3_KEY_SUFFIX')
     ):
-        config = m2ee.config._conf
+        config = m2ee.config._conf['mxruntime']
         logger.info(
             'S3 config detected, activating s3 file store and JSESSIONID'
         )
