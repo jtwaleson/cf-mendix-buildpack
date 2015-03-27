@@ -172,6 +172,8 @@ def start_app(m2ee):
         config['com.mendix.storage.s3.BucketName'] = os.getenv('S3_BUCKET_NAME')
         config['com.mendix.storage.s3.ResourceNameSuffix'] = os.getenv('S3_KEY_SUFFIX')
         config['com.mendix.storage.s3.PerformDeleteFromStorage'] = False
+        if os.getenv('S3_ENDPOINT'):
+            config['com.mendix.storage.s3.EndPoint'] = os.getenv('S3_ENDPOINT')
         config['com.mendix.core.SessionIdCookieName'] = 'JSESSIONID'
 
     if not m2ee.send_runtime_config():
